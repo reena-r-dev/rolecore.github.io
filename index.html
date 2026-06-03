@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>REENA R — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Bebas+Neue&family=Oxanium:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg0: #080c0c;
+    --bg1: #0d1414;
+    --bg2: #111a1a;
+    --bg3: #162020;
+    --green: #00ff88;
+    --green-dim: #00cc6a;
+    --green-dark: #003d1f;
+    --cyan: #00e5ff;
+    --cyan-dim: #00b8cc;
+    --amber: #ffb800;
+    --amber-dim: #cc9400;
+    --red: #ff4444;
+    --gray: #3a4a4a;
+    --gray-light: #5a7070;
+    --text: #c8e8e0;
+    --text-dim: #6a8a84;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg0);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* SCANLINES */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,136,0.015) 2px, rgba(0,255,136,0.015) 4px);
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* CURSOR BLINK */
+  .cursor::after {
+    content: '█';
+    animation: blink 1s step-end infinite;
+    color: var(--green);
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: rgba(8,12,12,0.95);
+    border-bottom: 1px solid var(--green-dark);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    height: 52px;
+  }
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 3px;
+    color: var(--green);
+  }
+  .nav-logo span { color: var(--cyan); }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--green); }
+  .nav-status {
+    font-size: 11px;
+    color: var(--green);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .nav-status::before {
+    content: '';
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s ease infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  /* SECTIONS */
+  section { padding: 100px 0 60px; max-width: 920px; margin: 0 auto; padding-left: 2rem; padding-right: 2rem; }
+
+  /* PROMPT LINE */
+  .prompt {
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .prompt .p-user { color: var(--green); }
+  .prompt .p-host { color: var(--cyan); }
+  .prompt .p-dir  { color: var(--amber); }
+
+  /* SECTION HEADER */
+  .sec-head {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    letter-spacing: 6px;
+    color: var(--green);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .sec-divider {
+    height: 1px;
+    background: linear-gradient(90deg, var(--green-dark) 0%, transparent 80%);
+    margin-bottom: 40px;
+  }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 52px;
+    max-width: 920px;
+    margin: 0 auto;
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+  .hero-boot {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 32px;
+    line-height: 2;
+  }
+  .hero-boot .ok  { color: var(--green); }
+  .hero-boot .dot { color: var(--amber); }
+  .hero-boot .err { color: var(--red); }
+  .hero-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(64px, 10vw, 120px);
+    letter-spacing: 10px;
+    color: var(--green);
+    line-height: 0.95;
+    margin-bottom: 12px;
+  }
+  .hero-title {
+    font-family: 'Oxanium', sans-serif;
+    font-size: clamp(16px, 2.5vw, 22px);
+    color: var(--cyan);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .hero-loc {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-bottom: 36px;
+  }
+  .hero-loc span { color: var(--amber); }
+  .hero-cta {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 10px 24px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: inline-block;
+  }
+  .btn-green {
+    border: 1px solid var(--green);
+    color: var(--green);
+    background: transparent;
+  }
+  .btn-green:hover { background: var(--green); color: var(--bg0); }
+  .btn-cyan {
+    border: 1px solid var(--cyan);
+    color: var(--cyan);
+    background: transparent;
+  }
+  .btn-cyan:hover { background: var(--cyan); color: var(--bg0); }
+  .hero-scroll {
+    margin-top: 60px;
+    font-size: 11px;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .hero-scroll::before {
+    content: '';
+    width: 40px; height: 1px;
+    background: var(--gray);
+  }
+
+  /* ABOUT */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+  .about-obj {
+    background: var(--bg1);
+    border: 1px solid var(--green-dark);
+    border-left: 3px solid var(--green);
+    padding: 24px;
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--text);
+  }
+  .about-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .stat-box {
+    background: var(--bg1);
+    border: 1px solid var(--gray);
+    padding: 16px;
+    text-align: center;
+  }
+  .stat-val {
+    font-family: 'Oxanium', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--cyan);
+  }
+  .stat-lbl { font-size: 10px; color: var(--text-dim); letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; }
+
+  /* SKILLS */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+  }
+  .skill-card {
+    background: var(--bg1);
+    border: 1px solid var(--gray);
+    padding: 20px;
+    transition: border-color 0.2s;
+  }
+  .skill-card:hover { border-color: var(--green); }
+  .skill-cat {
+    font-family: 'Oxanium', sans-serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 12px;
+  }
+  .skill-tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 3px 10px;
+    margin: 3px 3px 3px 0;
+    border: 1px solid var(--gray);
+    color: var(--text-dim);
+  }
+  .skill-tag.hi { border-color: var(--cyan-dim); color: var(--cyan); }
+
+  /* EXPERIENCE */
+  .exp-item {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 0 32px;
+    margin-bottom: 48px;
+    position: relative;
+  }
+  .exp-item::before {
+    content: '';
+    position: absolute;
+    left: 120px;
+    top: 8px;
+    bottom: -48px;
+    width: 1px;
+    background: var(--green-dark);
+  }
+  .exp-item:last-child::before { display: none; }
+  .exp-date {
+    text-align: right;
+    font-size: 11px;
+    color: var(--amber);
+    padding-top: 2px;
+    line-height: 1.5;
+  }
+  .exp-dot {
+    position: absolute;
+    left: calc(120px + 32px / 2 - 5px);
+    top: 6px;
+    width: 10px; height: 10px;
+    border: 1px solid var(--green);
+    background: var(--bg0);
+    transform: rotate(45deg);
+  }
+  .exp-body { padding-left: 16px; }
+  .exp-role {
+    font-family: 'Oxanium', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--green);
+    margin-bottom: 2px;
+  }
+  .exp-company {
+    font-size: 12px;
+    color: var(--cyan);
+    margin-bottom: 12px;
+  }
+  .exp-ul { list-style: none; }
+  .exp-ul li {
+    font-size: 13px;
+    color: var(--text);
+    margin-bottom: 6px;
+    padding-left: 16px;
+    position: relative;
+  }
+  .exp-ul li::before { content: '▸'; position: absolute; left: 0; color: var(--green-dim); }
+
+  /* PROJECT */
+  .proj-card {
+    background: var(--bg1);
+    border: 1px solid var(--gray);
+    border-top: 2px solid var(--cyan);
+    padding: 28px;
+    margin-bottom: 24px;
+  }
+  .proj-tag {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--cyan);
+    border: 1px solid var(--cyan-dim);
+    padding: 2px 10px;
+    margin-bottom: 12px;
+  }
+  .proj-name {
+    font-family: 'Oxanium', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+  .proj-bullets { list-style: none; }
+  .proj-bullets li {
+    font-size: 13px;
+    color: var(--text-dim);
+    padding-left: 18px;
+    position: relative;
+    margin-bottom: 8px;
+  }
+  .proj-bullets li::before { content: '//'; position: absolute; left: 0; color: var(--green-dim); font-size: 11px; top: 1px; }
+  .proj-tech {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .tech-pill {
+    font-size: 10px;
+    padding: 3px 12px;
+    background: var(--green-dark);
+    color: var(--green);
+    letter-spacing: 1px;
+  }
+
+  /* EDUCATION */
+  .edu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+  }
+  .edu-card {
+    background: var(--bg1);
+    border: 1px solid var(--gray);
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .edu-card::after {
+    content: attr(data-score);
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    color: var(--green-dark);
+    letter-spacing: 2px;
+    pointer-events: none;
+    line-height: 1;
+  }
+  .edu-level {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 6px;
+  }
+  .edu-name {
+    font-family: 'Oxanium', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+    padding-right: 60px;
+  }
+  .edu-school { font-size: 11px; color: var(--text-dim); }
+  .edu-score {
+    margin-top: 10px;
+    font-family: 'Oxanium', sans-serif;
+    font-size: 20px;
+    color: var(--cyan);
+  }
+
+  /* ACHIEVEMENTS / WORKSHOPS */
+  .ach-list { list-style: none; }
+  .ach-list li {
+    padding: 14px 0 14px 24px;
+    border-bottom: 1px solid var(--bg3);
+    font-size: 13px;
+    color: var(--text);
+    position: relative;
+  }
+  .ach-list li::before {
+    content: '■';
+    position: absolute;
+    left: 0;
+    color: var(--green-dim);
+    font-size: 8px;
+    top: 18px;
+  }
+  .ach-year {
+    float: right;
+    font-size: 11px;
+    color: var(--amber);
+    letter-spacing: 1px;
+  }
+
+  /* CONTACT */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+  .contact-info { }
+  .contact-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .contact-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--amber);
+    min-width: 70px;
+    padding-top: 2px;
+  }
+  .contact-val {
+    font-size: 13px;
+    color: var(--cyan);
+    word-break: break-all;
+  }
+  .lang-box {
+    background: var(--bg1);
+    border: 1px solid var(--green-dark);
+    padding: 20px;
+    margin-top: 24px;
+  }
+  .lang-title {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 12px;
+  }
+  .lang-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+    font-size: 13px;
+  }
+  .lang-bar {
+    flex: 1;
+    height: 3px;
+    background: var(--bg3);
+    position: relative;
+  }
+  .lang-fill {
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    background: var(--green);
+  }
+
+  /* TERMINAL CARD */
+  .terminal {
+    background: var(--bg1);
+    border: 1px solid var(--gray);
+  }
+  .terminal-bar {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--gray);
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+  .t-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .t-red { background: #ff4444; }
+  .t-yellow { background: #ffb800; }
+  .t-green { background: #00ff88; }
+  .terminal-body { padding: 20px; font-size: 12px; line-height: 2; }
+  .t-cmd { color: var(--green); }
+  .t-out { color: var(--text-dim); padding-left: 8px; }
+  .t-key { color: var(--cyan); }
+  .t-val { color: var(--amber); }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--green-dark);
+    text-align: center;
+    padding: 32px;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+  }
+  footer span { color: var(--green); }
+
+  @media(max-width: 640px) {
+    .about-grid, .contact-grid { grid-template-columns: 1fr; }
+    .exp-item { grid-template-columns: 1fr; }
+    .exp-item::before { display: none; }
+    .exp-dot { display: none; }
+    .exp-date { text-align: left; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">REENA<span>_R</span></div>
+  <ul class="nav-links">
+    <li><a href="#about">./about</a></li>
+    <li><a href="#skills">./skills</a></li>
+    <li><a href="#experience">./experience</a></li>
+    <li><a href="#projects">./projects</a></li>
+    <li><a href="#education">./education</a></li>
+    <li><a href="#contact">./contact</a></li>
+  </ul>
+  <div class="nav-status">OPEN TO WORK</div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-boot">
+    <div><span class="ok">[  OK  ]</span> Starting kernel: <span class="dot">portfolio-v2.6.1</span></div>
+    <div><span class="ok">[  OK  ]</span> Mounting filesystem: <span class="dot">/home/reena</span></div>
+    <div><span class="ok">[  OK  ]</span> Loading modules: <span class="dot">mern-stack</span> <span class="dot">deep-learning</span> <span class="dot">ai-ml</span></div>
+    <div><span class="ok">[  OK  ]</span> Network: <span class="dot">hosur.tn.in</span> — interface UP</div>
+    <div><span class="err">[ WARN ]</span> Opportunity not found — scanning for employer...</div>
+  </div>
+  <div class="hero-name">REENA R</div>
+  <div class="hero-title">Full-Stack Developer &amp; AI Engineer</div>
+  <div class="hero-loc">📍 <span>Hosur, Tamil Nadu</span> &nbsp;|&nbsp; B.Tech Information Technology &nbsp;|&nbsp; CGPA <span>8.25</span></div>
+  <div class="hero-cta">
+    <a href="#projects" class="btn btn-green">$ explore --projects</a>
+    <a href="#contact" class="btn btn-cyan">$ connect --now</a>
+  </div>
+  <div class="hero-scroll">scroll to boot sequence</div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="prompt"><span class="p-user">reena</span><span class="p-host">@portfolio</span>:<span class="p-dir">~/about</span>$ cat objective.txt</div>
+  <div class="sec-head">ABOUT</div>
+  <div class="sec-divider"></div>
+  <div class="about-grid">
+    <div class="about-obj">
+      Motivated and enthusiastic IT student with hands-on experience in web development and AI. Seeking an opportunity in a reputed organisation to apply my technical skills, grow continuously, and contribute to meaningful projects.
+    </div>
+    <div class="about-stats">
+      <div class="stat-box">
+        <div class="stat-val">8.25</div>
+        <div class="stat-lbl">CGPA</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">2</div>
+        <div class="stat-lbl">Internships</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">1</div>
+        <div class="stat-lbl">AI Project</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">5+</div>
+        <div class="stat-lbl">Events</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="prompt"><span class="p-user">reena</span><span class="p-host">@portfolio</span>:<span class="p-dir">~/skills</span>$ ls -la</div>
+  <div class="sec-head">SKILLS</div>
+  <div class="sec-divider"></div>
+  <div class="skills-grid">
+    <div class="skill-card">
+      <div class="skill-cat">Frontend</div>
+      <span class="skill-tag hi">HTML5</span>
+      <span class="skill-tag hi">CSS3</span>
+      <span class="skill-tag hi">JavaScript</span>
+    </div>
+    <div class="skill-card">
+      <div class="skill-cat">Backend &amp; Stack</div>
+      <span class="skill-tag hi">Node.js</span>
+      <span class="skill-tag hi">MERN Stack</span>
+      <span class="skill-tag">REST APIs</span>
+    </div>
+    <div class="skill-card">
+      <div class="skill-cat">AI / ML</div>
+      <span class="skill-tag hi">Deep Learning</span>
+      <span class="skill-tag hi">CNN</span>
+      <span class="skill-tag hi">Grad-CAM</span>
+      <span class="skill-tag">Python</span>
+    </div>
+    <div class="skill-card">
+      <div class="skill-cat">Tools</div>
+      <span class="skill-tag">VS Code</span>
+      <span class="skill-tag">GitHub</span>
+      <span class="skill-tag">Canva</span>
+      <span class="skill-tag">MS Office</span>
+    </div>
+    <div class="skill-card">
+      <div class="skill-cat">Soft Skills</div>
+      <span class="skill-tag">Problem Solving</span>
+      <span class="skill-tag">Team Work</span>
+      <span class="skill-tag">Adaptability</span>
+      <span class="skill-tag">Communication</span>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="prompt"><span class="p-user">reena</span><span class="p-host">@portfolio</span>:<span class="p-dir">~/experience</span>$ git log --oneline</div>
+  <div class="sec-head">EXPERIENCE</div>
+  <div class="sec-divider"></div>
+
+  <div class="exp-item">
+    <div class="exp-date">Jun 2025<br/>Sep 2025</div>
+    <div class="exp-dot"></div>
+    <div class="exp-body">
+      <div class="exp-role">MERN Stack Intern</div>
+      <div class="exp-company">Diyan Tech Solutions Pvt Ltd — Bangalore</div>
+      <ul class="exp-ul">
+        <li>Developed a full-featured online shopping web application using the MERN stack.</li>
+        <li>Worked on frontend and backend integration, improving web development workflow and responsive design.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="exp-item">
+    <div class="exp-date">Mar 2024</div>
+    <div class="exp-dot"></div>
+    <div class="exp-body">
+      <div class="exp-role">Artificial Intelligence Intern</div>
+      <div class="exp-company">Make Vision Scientific R&amp;D — Krishnagiri</div>
+      <ul class="exp-ul">
+        <li>Learned fundamentals of Artificial Intelligence and Machine Learning concepts.</li>
+        <li>Participated in practical sessions and technical learning activities.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="prompt"><span class="p-user">reena</span><span class="p-host">@portfolio</span>:<span class="p-dir">~/projects</span>$ cat README.md</div>
+  <div class="sec-head">PROJECTS</div>
+  <div class="sec-divider"></div>
+
+  <div class="proj-card">
+    <div class="proj-tag">AI · Deep Learning · Healthcare</div>
+    <div class="proj-name">Medical Image Analysis — Pneumonia Detection</div>
+    <ul class="proj-bullets">
+      <li>Built an AI-powered system to detect pneumonia from chest X-ray images using deep learning.</li>
+      <li>Applied Convolutional Neural Network (CNN) techniques for binary image classification.</li>
+      <li>Performed feature extraction pipelines to improve model accuracy and robustness.</li>
+      <li>Integrated Grad-CAM visualisation for explainable and interpretable AI results.</li>
+      <li>Designed a clean and interactive user interface for better user experience.</li>
+    </ul>
+    <div class="proj-tech">
+      <span class="tech-pill">Python</span>
+      <span class="tech-pill">CNN</span>
+      <span class="tech-pill">Grad-CAM</span>
+      <span class="tech-pill">Deep Learning</span>
+      <span class="tech-pill">UI Design</span>
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education">
+  <div class="prompt"><span class="p-user">reena</span><span class="p-host">@portfolio</span>:<span class="p-dir">~/education</span>$ ls --sort=year</div>
+  <div class="sec-head">EDUCATION</div>
+  <div class="sec-divider"></div>
+  <div class="edu-grid">
+    <div class="edu-card" data-score="8.25">
+      <div class="edu-level">B.Tech</div>
+      <div class="edu-name">Information Technology</div>
+      <div class="edu-school">Er. Perumal Manimekalai College of Engineering</div>
+      <div class="edu-score">CGPA 8.25</div>
+    </div>
+    <div class="edu-card" data-score="84%">
+      <div class="edu-level">HSC · 2021</div>
+      <div class="edu-name">Higher Secondary</div>
+      <div class="edu-school">St. John Bosco Girls HSS</div>
+      <div class="edu-score">84.8%</div>
+    </div>
+    <div class="edu-card" data-score="84%">
+      <div class="edu-level">SSLC · 2019</div>
+      <div class="edu-name">Secondary School</div>
+      <div class="edu-school">St. John Bosco Girls HSS</div>
+      <div class="edu-score">84.4%</div>
+    </div>
+  </div>
+</section>
+
+<!-- ACHIEVEMENTS -->
+<section id="achievements">
+  <div class="prompt"><span class="p-user">reena</span><span class="p-host">@portfolio</span>:<span class="p-dir">~/achievements</span>$ cat log.txt</div>
+  <div class="sec-head">ACHIEVEMENTS</div>
+  <div class="sec-divider"></div>
+  <ul class="ach-list">
+    <li><span class="ach-year">2025</span>Participated in Technical Event 'Phantasm' organised by GCE College, Krishnagiri.</li>
+    <li><span class="ach-year">2025</span>Attended webinar on 'Software Testing Using Automation' — ZEONY TECHNOLOGIES.</li>
+    <li><span class="ach-year">2026</span>Attended GUVI's webinar on 'Generative AI Skills'.</li>
+    <li><span class="ach-year">2023</span>Workshop: 'Data Analytics using Machine Learning' — PMC TECH (Autonomous), Hosur.</li>
+    <li><span class="ach-year">2024</span>Workshop: 'Python with SQL &amp; AI-ML' — Diyan Tech Solutions Pvt Ltd, Bangalore.</li>
+  </ul>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="prompt"><span class="p-user">reena</span><span class="p-host">@portfolio</span>:<span class="p-dir">~</span>$ ./connect.sh</div>
+  <div class="sec-head">CONTACT</div>
+  <div class="sec-divider"></div>
+  <div class="contact-grid">
+    <div class="contact-info">
+      <div class="contact-row">
+        <div class="contact-label">EMAIL</div>
+        <div class="contact-val">reenadanielr17@gmail.com</div>
+      </div>
+      <div class="contact-row">
+        <div class="contact-label">PHONE</div>
+        <div class="contact-val">+91 7708714202</div>
+      </div>
+      <div class="contact-row">
+        <div class="contact-label">LOCATION</div>
+        <div class="contact-val">Hosur, Tamil Nadu, India</div>
+      </div>
+      <div class="contact-row">
+        <div class="contact-label">STATUS</div>
+        <div class="contact-val" style="color: var(--green);">▶ Available for opportunities</div>
+      </div>
+      <div class="lang-box">
+        <div class="lang-title">Languages Known</div>
+        <div class="lang-item">Tamil <div class="lang-bar"><div class="lang-fill" style="width:100%"></div></div></div>
+        <div class="lang-item">English <div class="lang-bar"><div class="lang-fill" style="width:90%; background: var(--cyan);"></div></div></div>
+      </div>
+    </div>
+    <div class="terminal">
+      <div class="terminal-bar">
+        <div class="t-dot t-red"></div>
+        <div class="t-dot t-yellow"></div>
+        <div class="t-dot t-green"></div>
+        <span style="margin-left:8px">reena@portfolio — bash</span>
+      </div>
+      <div class="terminal-body">
+        <div><span class="t-cmd">$ whoami</span></div>
+        <div class="t-out">reena_r — IT engineer, AI enthusiast</div>
+        <br/>
+        <div><span class="t-cmd">$ cat hobbies.txt</span></div>
+        <div class="t-out"><span class="t-key">→</span> <span class="t-val">learning new tools &amp; technologies</span></div>
+        <div class="t-out"><span class="t-key">→</span> <span class="t-val">designing &amp; editing</span></div>
+        <div class="t-out"><span class="t-key">→</span> <span class="t-val">reading articles &amp; books</span></div>
+        <br/>
+        <div><span class="t-cmd">$ echo $LOOKING_FOR</span></div>
+        <div class="t-out"><span class="t-val">full-time role in IT / development / AI</span></div>
+        <br/>
+        <div><span class="t-cmd">$ ping employer<span class="cursor"></span></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>REENA R &nbsp;·&nbsp; <span>B.Tech IT</span> &nbsp;·&nbsp; Hosur, TN</div>
+  <div style="margin-top:8px; color: var(--green-dark);">// built with passion &amp; JetBrains Mono</div>
+</footer>
+
+</body>
+</html>
